@@ -2,6 +2,7 @@ import { JobExperience, PreviousJob } from "../types";
 import { FieldErrors, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z, ZodType } from "zod";
+import { useEffect } from "react";
 
 type Props = {
   onSubmit: (newExperience: JobExperience) => void;
@@ -73,9 +74,20 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm<JobExperience>({
     resolver: zodResolver(JobExperienceSchema),
   });
+
+  const isCurrent = watch("is_current");
+  useEffect(() => {
+    if (isCurrent === true) {
+      setValue("end_date.month", "");
+      setValue("end_date.year", "");
+    }
+  }, [isCurrent, setValue]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <header className="flex justify-between items-center p-4 border-b-1 border-gray-300">
@@ -169,8 +181,9 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
           <span>End date*</span>
           <div className="flex gap-2">
             <select
-              className="p-2 border-1 border-gray-500 rounded w-1/2"
+              className="p-2 border-1 border-gray-500 rounded w-1/2 disabled:bg-gray-300"
               {...register("end_date.month")}
+              disabled={isCurrent}
             >
               <option value="">Month</option>
               {MONTH_OPTIONS.map((month) => (
@@ -180,8 +193,9 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               ))}
             </select>
             <select
-              className="p-2 border-1 border-gray-500 rounded w-1/2"
+              className="p-2 border-1 border-gray-500 rounded w-1/2 disabled:bg-gray-300"
               {...register("end_date.year")}
+              disabled={isCurrent}
             >
               <option value="">Year</option>
               {YEAR_OPTIONS.map((year) => (
