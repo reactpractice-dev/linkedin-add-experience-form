@@ -26,7 +26,7 @@ function App() {
           </div>
         )}
         {experienceList.map((jobExperience) => (
-          <div className="p-4">
+          <div className="p-4" key={jobExperience.job_title}>
             <h2 className="text-xl font-semibold">{jobExperience.job_title}</h2>
             <p>{jobExperience.company}</p>
             <p className="text-gray-500">
