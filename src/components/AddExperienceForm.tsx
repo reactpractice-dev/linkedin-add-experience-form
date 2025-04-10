@@ -62,6 +62,23 @@ const PastJobSchema = JobSchema.merge(
         message: "⛔️ Start and end dates are required",
       }),
   })
+).refine(
+  (data) => {
+    const startDate = new Date(
+      parseInt(data.start_date.year),
+      parseInt(data.start_date.month)
+    );
+    const endDate = new Date(
+      parseInt(data.end_date.year),
+      parseInt(data.end_date.month)
+    );
+
+    return endDate > startDate;
+  },
+  {
+    message: "⛔️ End date can’t be earlier than start date",
+    path: ["end_date"],
+  }
 );
 
 const JobExperienceSchema: ZodType<JobExperience> = z.union([
