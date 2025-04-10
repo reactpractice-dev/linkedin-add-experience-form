@@ -141,6 +141,8 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               className="p-2 border-1 border-gray-500 rounded w-1/2"
               {...register("start_date.month")}
             >
+              <option value="">Month</option>
+
               {MONTH_OPTIONS.map((month) => (
                 <option key={month} value={month}>
                   {month}
@@ -151,6 +153,7 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               className="p-2 border-1 border-gray-500 rounded w-1/2"
               {...register("start_date.year")}
             >
+              <option value="">Year</option>
               {YEAR_OPTIONS.map((year) => (
                 <option key={year} value={year}>
                   {year}
@@ -169,6 +172,7 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               className="p-2 border-1 border-gray-500 rounded w-1/2"
               {...register("end_date.month")}
             >
+              <option value="">Month</option>
               {MONTH_OPTIONS.map((month) => (
                 <option key={month} value={month}>
                   {month}
@@ -179,6 +183,7 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               className="p-2 border-1 border-gray-500 rounded w-1/2"
               {...register("end_date.year")}
             >
+              <option value="">Year</option>
               {YEAR_OPTIONS.map((year) => (
                 <option key={year} value={year}>
                   {year}
