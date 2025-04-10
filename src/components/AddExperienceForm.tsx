@@ -1,5 +1,5 @@
-import { FormEventHandler } from "react";
 import { JobExperience } from "../types";
+import { useForm } from "react-hook-form";
 
 type Props = {
   onSubmit: (newExperience: JobExperience) => void;
@@ -26,15 +26,10 @@ const YEAR_OPTIONS = Array.from(
 ).map((year) => year.toString());
 
 const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target as HTMLFormElement);
-    const newExperience = Object.fromEntries(data);
-    console.log(newExperience);
-  };
+  const { register, handleSubmit } = useForm<JobExperience>({});
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <header className="flex justify-between items-center p-4 border-b-1 border-gray-300">
         <h2 className="text-2xl font-bold">Add Experience</h2>
         <button
@@ -50,16 +45,16 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
           <span>Title*</span>
           <input
             type="text"
-            name="job_title"
             placeholder="Ex: Retail Sales Manager"
             className="p-2 border-1 border-gray-500 rounded"
+            {...register("job_title")}
           ></input>
         </label>
         <label className="flex flex-col gap-1">
           <span>Employment type</span>
           <select
-            name="employment_type"
             className="p-2 border-1 border-gray-500 rounded"
+            {...register("employment_type")}
           >
             <option value="">Please select</option>
             <option value="Full-time">Full-time</option>
@@ -76,21 +71,21 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
           <span>Company or organisation*</span>
           <input
             type="text"
-            name="company"
             placeholder="Ex: Microsoft"
             className="p-2 border-1 border-gray-500 rounded"
+            {...register("company")}
           ></input>
         </label>
         <label className="flex flex-row gap-1">
-          <input type="checkbox" name="is_current"></input>
+          <input type="checkbox" {...register("is_current")}></input>
           <span>I am currently working in this role</span>
         </label>
         <div className="flex flex-col gap-1">
           <span>Start date*</span>
           <div className="flex gap-2">
             <select
-              name="start_date.month"
               className="p-2 border-1 border-gray-500 rounded w-1/2"
+              {...register("start_date.month")}
             >
               {MONTH_OPTIONS.map((month) => (
                 <option key={month} value={month}>
@@ -99,8 +94,8 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               ))}
             </select>
             <select
-              name="start_date.year"
               className="p-2 border-1 border-gray-500 rounded w-1/2"
+              {...register("start_date.year")}
             >
               {YEAR_OPTIONS.map((year) => (
                 <option key={year} value={year}>
@@ -114,8 +109,8 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
           <span>End date*</span>
           <div className="flex gap-2">
             <select
-              name="end_date.month"
               className="p-2 border-1 border-gray-500 rounded w-1/2"
+              {...register("end_date.month")}
             >
               {MONTH_OPTIONS.map((month) => (
                 <option key={month} value={month}>
@@ -124,8 +119,8 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               ))}
             </select>
             <select
-              name="end_date.year"
               className="p-2 border-1 border-gray-500 rounded w-1/2"
+              {...register("end_date.year")}
             >
               {YEAR_OPTIONS.map((year) => (
                 <option key={year} value={year}>
