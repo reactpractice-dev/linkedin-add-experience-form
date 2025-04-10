@@ -5,11 +5,11 @@ type Job = {
   start_date: { month: string; year: string };
 };
 
-type CurrentJob = Job & {
+export type CurrentJob = Job & {
   is_current: true;
 };
 
-type PreviousJob = Job & {
+export type PreviousJob = Job & {
   is_current: false;
   end_date: { month: string; year: string };
 };

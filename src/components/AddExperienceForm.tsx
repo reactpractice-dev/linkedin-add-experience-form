@@ -1,5 +1,7 @@
-import { JobExperience } from "../types";
-import { useForm } from "react-hook-form";
+import { JobExperience, PreviousJob } from "../types";
+import { FieldErrors, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z, ZodType } from "zod";
 
 type Props = {
   onSubmit: (newExperience: JobExperience) => void;
@@ -25,9 +27,55 @@ const YEAR_OPTIONS = Array.from(
   (_, i) => new Date().getFullYear() - i
 ).map((year) => year.toString());
 
-const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
-  const { register, handleSubmit } = useForm<JobExperience>({});
+const JobSchema = z.object({
+  job_title: z.string().min(1, { message: "⛔️ Title is a required field" }),
+  employment_type: z.string(),
+  company: z.string().min(1, {
+    message: "⛔️ Company is a required field",
+  }),
+  start_date: z
+    .object({
+      month: z.string(),
+      year: z.string(),
+    })
+    .required()
+    .refine((data) => data.month && data.year, {
+      message: "⛔️ Start date is a required field",
+    }),
+});
 
+const CurrentJobSchema = JobSchema.extend({
+  is_current: z.literal(true),
+});
+
+const PastJobSchema = JobSchema.merge(
+  z.object({
+    is_current: z.literal(false),
+    end_date: z
+      .object({
+        month: z.string(),
+        year: z.string(),
+      })
+      .required()
+      .refine((data) => data.month && data.year, {
+        message: "⛔️ Start and end dates are required",
+      }),
+  })
+);
+
+const JobExperienceSchema: ZodType<JobExperience> = z.union([
+  CurrentJobSchema,
+  PastJobSchema,
+]);
+
+const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<JobExperience>({
+    resolver: zodResolver(JobExperienceSchema),
+  });
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <header className="flex justify-between items-center p-4 border-b-1 border-gray-300">
@@ -49,6 +97,9 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
             className="p-2 border-1 border-gray-500 rounded"
             {...register("job_title")}
           ></input>
+          {errors.job_title && (
+            <span className="text-red-400">{errors.job_title.message}</span>
+          )}
         </label>
         <label className="flex flex-col gap-1">
           <span>Employment type</span>
@@ -75,6 +126,9 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
             className="p-2 border-1 border-gray-500 rounded"
             {...register("company")}
           ></input>
+          {errors.company && (
+            <span className="text-red-400">{errors.company.message}</span>
+          )}
         </label>
         <label className="flex flex-row gap-1">
           <input type="checkbox" {...register("is_current")}></input>
@@ -104,6 +158,9 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               ))}
             </select>
           </div>
+          {errors.start_date && (
+            <span className="text-red-400">{errors.start_date.message}</span>
+          )}
         </div>
         <div className="flex flex-col gap-1">
           <span>End date*</span>
@@ -129,6 +186,11 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               ))}
             </select>
           </div>
+          {(errors as FieldErrors<PreviousJob>).end_date && (
+            <span className="text-red-400">
+              {(errors as FieldErrors<PreviousJob>).end_date?.message}
+            </span>
+          )}
         </div>
       </div>
       <div className="flex justify-end border-t-1 border-gray-300 p-4">
