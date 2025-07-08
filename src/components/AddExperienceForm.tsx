@@ -172,8 +172,8 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
             >
               <option value="">Month</option>
 
-              {MONTH_OPTIONS.map((month) => (
-                <option key={month} value={month}>
+              {MONTH_OPTIONS.map((month, index) => (
+                <option key={month} value={index + 1}>
                   {month}
                 </option>
               ))}
@@ -203,8 +203,8 @@ const AddExperienceForm = ({ onSubmit, onCancel }: Props) => {
               disabled={isCurrent}
             >
               <option value="">Month</option>
-              {MONTH_OPTIONS.map((month) => (
-                <option key={month} value={month}>
+              {MONTH_OPTIONS.map((month, index) => (
+                <option key={month} value={index + 1}>
                   {month}
                 </option>
               ))}
